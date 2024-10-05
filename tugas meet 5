@@ -1,0 +1,275 @@
+Open In Colab
+-slide14-15- Contoh Kasus 1
+
+
+# A Divide and Conquer based program
+# for maximum subarray sum problem
+
+# Find the maximum possible sum in
+# arr[] such that arr[m] is part of it
+
+def maxCrossingSum(arr, l, m, h):
+    # Include elements on left of mid.
+    sm = 0
+    left_sum = -10000
+
+    for i in range(m, l-1, -1):
+        sm = sm + arr[i]
+
+        if (sm > left_sum):
+            left_sum = sm
+
+    # Include elements on right of mid
+    sm = 0
+    right_sum = -1000
+    for i in range(m, h + 1):
+        sm = sm + arr[i]
+
+        if (sm > right_sum):
+            right_sum = sm
+
+    # Return sum of elements on left and right of mid
+    # returning only left_sum + right_sum will fail for [-2, 1]
+    return max(left_sum + right_sum - arr[m], left_sum, right_sum)
+# Returns sum of maximum sum subarray in aa[l..h]
+def maxSubArraySum(arr, l, h):
+    # Invalid Range: low is greater than high
+    if (l > h):
+        return -10000
+    # Base Case: Only one element
+    if (l == h):
+        return arr[l]
+
+    # Find middle point
+    m = (l + h) // 2
+
+    # Return maximum of following three possible cases
+    # a) Maximum subarray sum in left half
+    # b) Maximum subarray sum in right half
+    # c) Maximum subarray sum such that the
+    #    subarray crosses the midpoint
+    return max(maxSubArraySum(arr, l, m-1),
+               maxSubArraySum(arr, m+1, h),
+               maxCrossingSum(arr, l, m, h))
+
+# Driver Code
+arr = [4, 12, 23, 9, 21, 1, 35, 2, 24]
+n = len(arr)
+
+max_sum = maxSubArraySum(arr, 0, n-1)
+print("Maximum contiguous sum is ", max_sum)
+
+# Second example
+arr = [12, 51, 23, 84, 5, 9]
+n = len(arr)
+
+max_sum = maxSubArraySum(arr, 0, n-1)
+print("Maximum contiguous sum is ", max_sum)
+     
+Maximum contiguous sum is  131
+Maximum contiguous sum is  184
+
+-slide21- MinMaks
+
+
+def divideAndConquer(arr, ind, lend):
+    maximum=-1;
+
+    if(ind >= lend -2):
+        if(arr[ind] > arr[ind + 1]):
+            return arr[ind]
+        else:
+        return arr[ind]
+
+        maximum = divideAndConquer(arr, ind + 1, lend)
+
+    if(arr[ind] > maximum):
+        return arr[ind]
+    else:
+        return maximum
+     
+     
+-slide26- MERGE SORT
+
+
+def mergeSort(arr):
+    if len(arr) > 1:
+        # Find the middle of the array
+        r = len(arr) // 2
+        # Split the array into two halves
+        L = arr[:r]
+        M = arr[r:]
+
+        # Recursively sort both halves
+        mergeSort(L)
+        mergeSort(M)
+
+        # Initialize pointers for L, M, and the main array
+        i = j = k = 0
+
+        # Merge the arrays L and M back into arr
+        while i < len(L) and j < len(M):
+            if L[i] < M[j]:
+                arr[k] = L[i]
+                i += 1
+            else:
+                arr[k] = M[j]
+                j += 1
+            k += 1
+
+        # If there are remaining elements in L, add them to arr
+        while i < len(L):
+            arr[k] = L[i]
+            i += 1
+            k += 1
+
+        # If there are remaining elements in M, add them to arr
+        while j < len(M):
+            arr[k] = M[j]
+            j += 1
+            k += 1
+
+# Function to print the array
+def printList(arr):
+    for i in range(len(arr)):
+        print(arr[i], end=" ")
+    print()
+
+# Test the mergeSort function
+array = [8, 3, 2, 9, 7, 1, 5, 4, 6]
+mergeSort(array)
+print("Sorted array is:")
+printList(array)
+
+     
+Sorted array is:
+1 2 3 4 5 6 7 8 9
+
+-slide28- INSERTION SORT
+
+
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        # Move elements of arr[0..i-1], that are greater than key, to one position ahead
+        # of their current position
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr  # Move the return statement outside the loop
+
+# Example usage
+arr = [4, 12, 23, 9, 21, 1, 5, 2]
+print("Sorted array is:", insertion_sort(arr))
+
+     
+Sorted array is: [1, 2, 4, 5, 9, 12, 21, 23]
+
+
+-slide38- Quick Sort
+
+
+# Function to find the partition position
+def partition(array, low, high):
+    # choose the rightmost element as pivot
+    pivot = array[high]
+
+    # pointer for greater element
+    i = low - 1
+
+    # traverse through all elements
+    # compare each element with pivot
+    for j in range(low, high):
+        if array[j] <= pivot:
+            # If element smaller than pivot is found
+            # swap it with the greater element pointed by i
+            i = i + 1
+            # Swapping element at i with element at j
+            (array[i], array[j]) = (array[j], array[i])
+
+    # Swap the pivot element with the greater element specified by i
+    (array[i + 1], array[high]) = (array[high], array[i + 1])
+
+    # Return the position from where partition is done
+    return i + 1  # Corrected this to return the right index
+
+
+# Function to perform quicksort
+def quick_sort(array, low, high):
+    if low < high:
+        # Find pivot element such that
+        # elements smaller than pivot are on the left
+        # elements greater than pivot are on the right
+        pi = partition(array, low, high)
+
+        # Recursive call on the left of pivot
+        quick_sort(array, low, pi - 1)
+
+        # Recursive call on the right of pivot
+        quick_sort(array, pi + 1, high)
+
+
+# Main execution starts here
+data = [1, 7, 4, 1, 10, 9, -2]
+print("Unsorted Array")
+print(data)
+
+# Call quicksort
+size = len(data)
+quick_sort(data, 0, size - 1)
+
+print('Sorted Array in Ascending Order:')
+print(data)
+
+     
+Unsorted Array
+[1, 7, 4, 1, 10, 9, -2]
+Sorted Array in Ascending Order:
+[-2, 1, 1, 4, 7, 9, 10]
+
+-slide39-40- IMPLEMENTASI ALGORITMA(invers dalam suatu array)
+
+
+ # Hitung Inversi
+def countInversion(arr):
+    result=0
+    for i in range(len(arr)):
+      for j in range(i+1,len(arr)):
+        if arr[i]>arr[j]:
+          result+=1
+        return result
+
+
+
+     
+
+arr=[21, 70, 36, 14, 25]
+     
+
+result=countInversion(arr)
+print(result)
+     
+0
+
+def countInversion(arr):
+    icount=0
+    if len(arr)<=1:
+        return icount
+
+    mid=len(arr)//2
+    left=arr[:mid]
+    right=arr[mid:]
+    icount+=countInversion(left)
+    icount+=countInversion(right)
+    i=j=k=0
+
+    while i
+
+arr=[1, 20, 6, 4, 5]
+
+result = countInversion(arr)
+print(result)
+     
+5
